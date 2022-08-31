@@ -30,12 +30,12 @@
 			<comment><![CDATA[Calendarización por área
 Calendarización por Equipos
 Alertas]]></comment>
-			<column name="Id" type="INT" jt="4" mandatory="y" />
+			<column name="Id_Calendarizacion" prior="Id" type="INT" jt="4" mandatory="y" />
 			<column name="por area" type="DATETIME" jt="93" />
 			<column name="por equipo" type="DATETIME" jt="93" />
-			<column name="alertas" type="INT" jt="4" />
+			<column name="Id_alertas" prior="alertas" type="CHAR" length="8" jt="1" />
 			<index name="pk_calendarización" unique="PRIMARY_KEY" >
-				<column name="Id" />
+				<column name="Id_Calendarizacion" />
 			</index>
 		</table>
 		<table name="Catalogo" prior="entity" >
@@ -213,9 +213,6 @@ nothing]]></comment>
 			<index name="pk_red logica" unique="PRIMARY_KEY" >
 				<column name="Id_Red_Logica" />
 			</index>
-			<fk name="fk_red logica_calendarización" virtual="y" to_schema="equipos.INSTANCE" to_table="Calendarización" type="OneToOne" >
-				<fk_column name="Id_Red_Logica" pk="alertas" />
-			</fk>
 		</table>
 		<table name="Servicios" prior="entity" >
 			<comment><![CDATA[Preventivo
@@ -253,18 +250,18 @@ Tiempo]]></comment>
 	<layout name="Default Layout" id="Layout-d9" joined_routing="y" show_relation="columns" >
 		<entity schema="equipos.INSTANCE" name="Alertas" color="C1D8EE" x="720" y="544" />
 		<entity schema="equipos.INSTANCE" name="Areas" color="C1D8EE" x="928" y="368" />
-		<entity schema="equipos.INSTANCE" name="Calendarización" color="C1D8EE" x="272" y="528" />
+		<entity schema="equipos.INSTANCE" name="Calendarización" color="C1D8EE" x="240" y="544" />
 		<entity schema="equipos.INSTANCE" name="Catalogo" color="C1D8EE" x="496" y="160" />
 		<entity schema="equipos.INSTANCE" name="Control_Ips" color="C1D8EE" x="688" y="864" />
 		<entity schema="equipos.INSTANCE" name="Edificio-Area" color="C1D8EE" x="704" y="272" />
 		<entity schema="equipos.INSTANCE" name="Efidicios" color="C1D8EE" x="896" y="256" />
 		<entity schema="equipos.INSTANCE" name="Estatus" color="C1D8EE" x="560" y="256" />
-		<entity schema="equipos.INSTANCE" name="Historico" color="C1D8EE" x="976" y="688" />
+		<entity schema="equipos.INSTANCE" name="Historico" color="C1D8EE" x="992" y="624" />
 		<entity schema="equipos.INSTANCE" name="ID" color="C1D8EE" x="48" y="128" />
-		<entity schema="equipos.INSTANCE" name="IP" color="C1D8EE" x="960" y="848" />
+		<entity schema="equipos.INSTANCE" name="IP" color="C1D8EE" x="992" y="832" />
 		<entity schema="equipos.INSTANCE" name="Inventario_Equipos" color="C1D8EE" x="256" y="160" />
-		<entity schema="equipos.INSTANCE" name="Permisos_Equipo" color="C1D8EE" x="944" y="1040" />
-		<entity schema="equipos.INSTANCE" name="Permisos_Usuario" color="C1D8EE" x="944" y="944" />
+		<entity schema="equipos.INSTANCE" name="Permisos_Equipo" color="C1D8EE" x="944" y="1056" />
+		<entity schema="equipos.INSTANCE" name="Permisos_Usuario" color="C1D8EE" x="960" y="944" />
 		<entity schema="equipos.INSTANCE" name="Red Logica" color="C1D8EE" x="480" y="576" />
 		<entity schema="equipos.INSTANCE" name="Servicios" color="C1D8EE" x="704" y="160" />
 		<entity schema="equipos.INSTANCE" name="Tipo_Solicitud" color="C1D8EE" x="1328" y="1088" />
@@ -272,10 +269,6 @@ Tiempo]]></comment>
 			<comment><![CDATA[Add entities to the layout by drag & drop from the project structure.
 Double-click the entity header to edit.
 Drop this callout from its context menu.]]></comment>
-		</callout>
-		<callout x="704" y="800" pointer="SV" >
-			<comment><![CDATA[Es necesario agregar tipo de equipo en control de ips o solo asignando la primary key a la tabla inventario o viceversa agregar inventario a control de ips
-]]></comment>
 		</callout>
 	</layout>
 </project>
