@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="equipos" id="Project-2089" database="LogicalDesign" >
+	<comment><![CDATA[Tablas para sistema de gestion de equipos]]></comment>
+	<schema name="INSTANCE" catalogname="equipos" >
+		<table name="Alertas" prior="alertas" >
+			<column name="Id_alerta" prior="Id" type="INT" jt="4" mandatory="y" />
+			<column name="Id_Ip" type="CHAR" length="8" jt="1" />
+			<column name="Id_Descripcion_Alerta" type="CHAR" length="8" jt="1" />
+			<column name="Dictamen" type="BIGINT" jt="-5" />
+			<column name="descripcion" prior="Id_Historico_Ip" type="CHAR" length="25" jt="1" />
+			<column name="id_equipo" type="CHAR" length="5" jt="1" />
+			<index name="pk_alertas" unique="PRIMARY_KEY" >
+				<column name="Id_alerta" />
+			</index>
+		</table>
+		<table name="Control_Ips" prior="Control_Ip" >
+			<comment><![CDATA[Asignación
+Disponibilidad
+Permisos Por Persona
+Usuarios
+Tipos de Equipos
+Permisos por Equipo]]></comment>
+			<column name="Id_folio_control" prior="Id_folio" type="INT" jt="4" mandatory="y" />
+			<column name="fecha_asignacion" type="DATE" jt="91" />
+			<column name="id_equipo" type="CHAR" length="5" jt="1" />
+			<column name="Disponibilidad" type="BOOLEAN" jt="-7" />
+			<column name="Usuario" type="BOOLEAN" jt="-7" >
+				<defo><![CDATA[null]]></defo>
+			</column>
+			<column name="Id_Permisos_Equipo" type="CHAR" length="8" jt="1" />
+			<column name="id_TipoSolicitud" prior="id_tipoSolicitud" type="INT" jt="4" />
+			<index name="idx_control_ips" unique="UNIQUE_KEY" >
+				<column name="id_equipo" />
+			</index>
+			<index name="pk_control_ips" unique="PRIMARY_KEY" >
+				<column name="Id_folio_control" />
+			</index>
+			<fk name="fk_control_ips_tipo_solicitud" virtual="y" to_schema="equipos.INSTANCE" to_table="cat_solicitud" type="Identifying" >
+				<fk_column name="id_TipoSolicitud" pk="Id_TipoSolicitud" />
+			</fk>
+		</table>
+		<table name="IP" prior="entity" >
+			<comment><![CDATA[comentario de prueba]]></comment>
+			<column name="Id_Ip" type="INT" jt="4" mandatory="y" />
+			<column name="IP" type="VARCHAR" length="15" jt="12" />
+			<column name="Id_Control_Ip" type="CHAR" length="8" jt="1" />
+			<index name="pk_ip" unique="PRIMARY_KEY" >
+				<column name="Id_Ip" />
+			</index>
+		</table>
+		<table name="Permisos_Eq" prior="entity" />
+		<table name="calendarización" prior="entity" >
+			<comment><![CDATA[Calendarización por área
+Calendarización por Equipos
+Alertas]]></comment>
+			<column name="Id" type="INT" jt="4" mandatory="y" />
+			<column name="por area" type="DATETIME" jt="93" />
+			<column name="por equipo" type="DATETIME" jt="93" />
+			<column name="alertas" type="INT" jt="4" />
+			<index name="pk_calendarización" unique="PRIMARY_KEY" >
+				<column name="Id" />
+			</index>
+		</table>
+		<table name="cat_dd" prior="estatus_0" >
+			<comment><![CDATA[id_dd
+capacidad
+interfaz]]></comment>
+			<column name="Id_dd" prior="Id_estatus" type="INT" jt="4" mandatory="y" />
+			<column name="capacidad" prior="cpacidad" type="CHAR" length="10" jt="1" />
+			<column name="interfaz" type="CHAR" length="10" jt="1" />
+			<index name="pk_equipos_1" unique="PRIMARY_KEY" >
+				<column name="Id_dd" />
+			</index>
+		</table>
+		<table name="cat_nic" prior="cat_dd_0" >
+			<comment><![CDATA[id_nic
+mac
+velocidad
+estatus]]></comment>
+			<column name="Id_nic" prior="Id_dd" type="INT" jt="4" mandatory="y" />
+			<column name="mac" prior="capacidad" type="CHAR" length="16" jt="1" />
+			<column name="velocidad" prior="interfaz" type="CHAR" length="3" jt="1" />
+			<column name="estatus" type="BOOLEAN" length="1" jt="-7" >
+				<comment><![CDATA[1 para activo
+0 no activo]]></comment>
+			</column>
+			<index name="pk_equipos_2" unique="PRIMARY_KEY" >
+				<column name="Id_nic" />
+			</index>
+		</table>
+		<table name="cat_so" prior="cat_nic_0" >
+			<comment><![CDATA[id_so
+sistema
+version
+arquitectura]]></comment>
+			<column name="Id_so" prior="Id_nic" type="INT" jt="4" mandatory="y" />
+			<column name="sistema" prior="mac" type="CHAR" length="16" jt="1" />
+			<column name="version" prior="velocidad" type="CHAR" length="3" jt="1" />
+			<column name="arquitectura" prior="estatus" type="CHAR" length="2" jt="1" >
+				<defo><![CDATA[64]]></defo>
+			</column>
+			<index name="pk_equipos_3" unique="PRIMARY_KEY" >
+				<column name="Id_so" />
+			</index>
+			<fk name="fk_cat_so_equipos" virtual="y" to_schema="equipos.INSTANCE" to_table="equipos" type="Identifying" >
+				<fk_column name="Id_so" pk="id_so" />
+			</fk>
+		</table>
+		<table name="cat_solicitud" prior="Tipo_Solicitud" >
+			<comment><![CDATA[Oficio
+Verbal
+Instrucción
+Tiempo]]></comment>
+			<column name="Id_TipoSolicitud" prior="Id_Tipo_Solicitud" type="INT" jt="4" mandatory="y" />
+			<column name="Medio" type="VARCHAR" length="25" jt="12" />
+			<column name="Tiempo" type="VARCHAR" length="25" jt="12" />
+			<index name="pk_tipo_solicitud" unique="PRIMARY_KEY" >
+				<column name="Id_TipoSolicitud" />
+			</index>
+		</table>
+		<table name="cat_tipos" prior="tipos" >
+			<comment><![CDATA[id_tipo
+Descripcion]]></comment>
+			<column name="id_tipo" type="INT" jt="4" mandatory="y" />
+			<column name="descripcion" type="VARCHAR" length="25" jt="12" />
+			<index name="pk_id" unique="PRIMARY_KEY" >
+				<column name="id_tipo" />
+			</index>
+		</table>
+		<table name="entity" />
+		<table name="equipos" prior="Inventario_Equipos" >
+			<comment><![CDATA[id_equipo
+descripcion
+modelo
+fabricante
+serie
+ip1
+mac1
+ip2
+mac2
+ip3
+mac3
+usuario
+resguardantes
+Area asignación
+id_estatus
+cat_so]]></comment>
+			<column name="Id_equipo" prior="Id" type="CHAR" length="5" jt="1" mandatory="y" />
+			<column name="id_tipo" type="INT" jt="4" />
+			<column name="descripcion" prior="caracteristicas" type="VARCHAR" length="255" jt="12" />
+			<column name="modelo" prior="catalogos" type="CHAR" length="25" jt="1" />
+			<column name="id_fabricante" prior="estatus" type="CHAR" length="2" jt="1" />
+			<column name="serie" type="CHAR" length="25" jt="1" />
+			<column name="ip1" prior="IP" type="VARCHAR" length="12" jt="12" />
+			<column name="ip2" type="CHAR" length="12" jt="1" />
+			<column name="ip3" type="CHAR" length="12" jt="1" />
+			<column name="mac1" type="CHAR" length="16" jt="1" />
+			<column name="mac2" type="CHAR" length="16" jt="1" />
+			<column name="mac3" type="CHAR" length="16" jt="1" />
+			<column name="resguardantes" type="INT" jt="4" />
+			<column name="area_asignada" type="INT" jt="4" />
+			<column name="id_estatus" type="INT" jt="4" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="id_so" prior="cat_so" type="INT" jt="4" />
+			<index name="pk_equipos" unique="PRIMARY_KEY" >
+				<column name="Id_equipo" />
+			</index>
+			<fk name="fk_equipos_cat_tipos" virtual="y" to_schema="equipos.INSTANCE" to_table="cat_tipos" type="Identifying" >
+				<fk_column name="id_tipo" pk="id_tipo" />
+			</fk>
+			<fk name="fk_equipos_control_ips" virtual="y" to_schema="equipos.INSTANCE" to_table="Control_Ips" type="Identifying" >
+				<fk_column name="Id_equipo" pk="id_equipo" />
+			</fk>
+			<fk name="fk_equipos_alertas" virtual="y" to_schema="equipos.INSTANCE" to_table="Alertas" type="Identifying" >
+				<fk_column name="Id_equipo" pk="id_equipo" />
+			</fk>
+			<fk name="fk_equipos_incidencias" virtual="y" to_schema="equipos.INSTANCE" to_table="incidencias" type="Identifying" >
+				<fk_column name="Id_equipo" pk="id_equipo" />
+			</fk>
+			<fk name="fk_equipos_incidencias_0" virtual="y" to_schema="equipos.INSTANCE" to_table="incidencias" type="Identifying" >
+				<fk_column name="Id_equipo" pk="id_equipo" />
+			</fk>
+			<fk name="fk_equipos_incidencias_1" virtual="y" to_schema="equipos.INSTANCE" to_table="incidencias" type="Identifying" >
+				<fk_column name="Id_equipo" pk="id_equipo" />
+			</fk>
+		</table>
+		<table name="estatus" prior="inventario_equipos_0" >
+			<comment><![CDATA[id_estatus
+ Estatus]]></comment>
+			<column name="Id_estatus" prior="Id" type="INT" jt="4" mandatory="y" />
+			<column name="estatus" type="CHAR" length="10" jt="1" />
+			<index name="pk_equipos_0" unique="PRIMARY_KEY" >
+				<column name="Id_estatus" />
+			</index>
+			<fk name="fk_estatus_estatus" virtual="y" to_schema="equipos.INSTANCE" to_table="equipos" type="Identifying" >
+				<fk_column name="Id_estatus" pk="id_estatus" />
+			</fk>
+		</table>
+		<table name="incidencias" prior="alertas_0" >
+			<column name="id_equipo" type="CHAR" length="5" jt="1" />
+			<column name="Id_incidencia" prior="Id_alerta" type="INT" jt="4" mandatory="y" />
+			<column name="ip" prior="Id_Ip" type="CHAR" length="12" jt="1" />
+			<column name="descripcion" type="CHAR" length="25" jt="1" />
+			<column name="Dictamen" type="BIGINT" jt="-5" />
+			<column name="fecha" type="DATE" jt="91" />
+			<index name="pk_alertas_0" unique="PRIMARY_KEY" >
+				<column name="Id_incidencia" />
+			</index>
+		</table>
+		<table name="red logica" prior="re" >
+			<comment><![CDATA[Alertas
+ Control de Ips]]></comment>
+			<column name="Id" type="INT" jt="4" mandatory="y" />
+			<column name="alertas" type="INT" jt="4" />
+			<column name="control_ip" type="INT" jt="4" />
+			<index name="pk_red logica" unique="PRIMARY_KEY" >
+				<column name="Id" />
+			</index>
+		</table>
+	</schema>
+	<layout name="Default Layout" id="Layout-d9" joined_routing="y" show_relation="columns" >
+		<entity schema="equipos.INSTANCE" name="Alertas" color="C1D8EE" x="560" y="176" />
+		<entity schema="equipos.INSTANCE" name="Control_Ips" color="C1D8EE" x="560" y="336" />
+		<entity schema="equipos.INSTANCE" name="calendarización" color="C1D8EE" x="1136" y="208" />
+		<entity schema="equipos.INSTANCE" name="cat_dd" color="3986C1" x="112" y="288" />
+		<entity schema="equipos.INSTANCE" name="cat_nic" color="3986C1" x="1136" y="80" />
+		<entity schema="equipos.INSTANCE" name="cat_so" color="3986C1" x="96" y="560" />
+		<entity schema="equipos.INSTANCE" name="cat_solicitud" color="C1D8EE" x="864" y="432" />
+		<entity schema="equipos.INSTANCE" name="cat_tipos" color="C1D8EE" x="112" y="400" />
+		<entity schema="equipos.INSTANCE" name="equipos" color="C1D8EE" x="336" y="416" />
+		<entity schema="equipos.INSTANCE" name="estatus" color="3986C1" x="112" y="192" />
+		<entity schema="equipos.INSTANCE" name="incidencias" color="3986C1" x="576" y="528" />
+		<callout x="48" y="48" pointer="Round" >
+			<comment><![CDATA[Add entities to the layout by drag & drop from the project structure.
+Double-click the entity header to edit.
+Drop this callout from its context menu.]]></comment>
+		</callout>
+	</layout>
+</project>
