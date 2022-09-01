@@ -12,6 +12,34 @@
 				<fk_column name="Id_Area" pk="Id_Area" />
 			</fk>
 		</table>
+		<table name="Baterias" prior="Bateria" >
+			<column name="Id_Baterias" type="INT" jt="4" mandatory="y" />
+			<column name="Modelo" type="VARCHAR" length="25" jt="12" />
+			<column name="caracteristicas" type="TEXT" length="255" jt="-1" />
+			<column name="id_bateria" type="VARCHAR" length="20" jt="12" />
+			<index name="pk_baterias" unique="PRIMARY_KEY" >
+				<column name="Id_Baterias" />
+			</index>
+			<fk name="fk_baterias_estado_bateria" virtual="y" to_schema="equipos.INSTANCE" to_table="estado_bateria" type="Identifying" >
+				<fk_column name="id_bateria" pk="clasificacion" />
+			</fk>
+		</table>
+		<table name="Cantidad_de_Puertos" prior="Puertos" >
+			<column name="Id_Puertos" type="INT" jt="4" mandatory="y" />
+			<column name="usb" type="INT" length="1" jt="4" />
+			<column name="usb_c" type="INT" jt="4" />
+			<column name="audio" prior="audi" type="VARCHAR" length="15" jt="12" />
+			<column name="vga" type="BOOLEAN" jt="-7" />
+			<column name="hdmi" type="BOOLEAN" jt="-7" />
+			<column name="unidad cd/DVD" type="INT" jt="4" />
+			<column name="id_estado" type="VARCHAR" length="20" jt="12" />
+			<index name="pk_puertos" unique="PRIMARY_KEY" >
+				<column name="Id_Puertos" />
+			</index>
+			<fk name="fk_cantidad_de_puertos_estado_puertos" virtual="y" to_schema="equipos.INSTANCE" to_table="estado_puertos" type="Identifying" >
+				<fk_column name="id_estado" pk="clasificacion" />
+			</fk>
+		</table>
 		<table name="Catalogo" prior="entity" >
 			<column name="Id_Catalogo" type="INT" jt="4" mandatory="y" />
 			<column name="Dispositivo" type="VARCHAR" length="50" jt="12" />
@@ -22,12 +50,24 @@
 				<fk_column name="Id_Catalogo" pk="Id_catalogo" />
 			</fk>
 		</table>
+		<table name="Clasificacion_tarjetas_red" prior="entity_0" >
+			<comment><![CDATA[wifi
+ethernet]]></comment>
+			<column name="Clasificacion_tarjetas_red" type="VARCHAR" length="20" jt="12" mandatory="y" />
+			<index name="pk_clasificacion_tarjetas_red" unique="PRIMARY_KEY" >
+				<column name="Clasificacion_tarjetas_red" />
+			</index>
+		</table>
 		<table name="Dispositivos_Almacenamiento" prior="Almacenamiento" >
 			<column name="Id_Dispositivo_Almacenamiento" prior="Id_disp" type="INT" jt="4" mandatory="y" />
 			<column name="clasificacion" type="VARCHAR" length="20" jt="12" />
+			<column name="id_estado" type="VARCHAR" length="20" jt="12" />
 			<index name="pk_almacenamiento" unique="PRIMARY_KEY" >
 				<column name="Id_Dispositivo_Almacenamiento" />
 			</index>
+			<fk name="fk_dispositivos_almacenamiento_estado_almacenamiento" virtual="y" to_schema="equipos.INSTANCE" to_table="estado_almacenamiento" type="Identifying" >
+				<fk_column name="id_estado" pk="clasificacion" />
+			</fk>
 		</table>
 		<table name="Edificio-Area" prior="Edificio-" >
 			<column name="Id_Area_Asignada" prior="Id_Area" type="INT" jt="4" mandatory="y" />
@@ -60,6 +100,7 @@
 		</table>
 		<table name="Equipos_de_computo" prior="Equipos_de_computio" >
 			<column name="Id_equipos_computo" type="INT" jt="4" mandatory="y" />
+			<column name="id_monitores" type="INT" jt="4" />
 			<column name="id_tipo" prior="Tipo" type="INT" length="20" jt="4" mandatory="y" >
 				<comment><![CDATA[Escritorio
 Portatil]]></comment>
@@ -68,8 +109,54 @@ Portatil]]></comment>
 			<column name="id_modelo" type="INT" jt="4" />
 			<column name="id_hadware" prior="hadware" type="INT" jt="4" />
 			<column name="id_software" prior="software" type="INT" jt="4" />
+			<column name="id_tarjetas_de_red" type="INT" jt="4" >
+				<defo><![CDATA[null]]></defo>
+			</column>
+			<column name="id_servicios_equipo" type="INT" jt="4" />
+			<column name="id_status_equipo" type="VARCHAR" length="15" jt="12" />
 			<index name="pk_equipos_de_computo" unique="PRIMARY_KEY" >
 				<column name="Id_equipos_computo" />
+			</index>
+			<fk name="fk_equipos_de_computo_software" virtual="y" to_schema="equipos.INSTANCE" to_table="Software" type="Identifying" >
+				<fk_column name="id_software" pk="Id_software" />
+			</fk>
+			<fk name="fk_equipos_de_computo_hadware" virtual="y" to_schema="equipos.INSTANCE" to_table="Hadware" type="Identifying" >
+				<fk_column name="id_hadware" pk="Id_hadware" />
+			</fk>
+			<fk name="fk_equipos_de_computo_modelos" virtual="y" to_schema="equipos.INSTANCE" to_table="Modelos" type="Identifying" >
+				<fk_column name="id_modelo" pk="Id_Modelo" />
+			</fk>
+			<fk name="fk_equipos_de_computo_marcas" virtual="y" to_schema="equipos.INSTANCE" to_table="Marcas" type="Identifying" >
+				<fk_column name="id_marca" pk="Id_Marca" />
+			</fk>
+			<fk name="fk_equipos_de_computo_tipo_de_equipo_computo" virtual="y" to_schema="equipos.INSTANCE" to_table="Tipo_de_Equipo_Computo" type="Identifying" >
+				<fk_column name="id_tipo" pk="Id_Tipo_Equipo_Computo" />
+			</fk>
+			<fk name="fk_equipos_de_computo_status_equipo" virtual="y" to_schema="equipos.INSTANCE" to_table="Status_Equipo" type="Identifying" >
+				<fk_column name="id_status_equipo" pk="Estado_equipo" />
+			</fk>
+		</table>
+		<table name="Estado_Procesador" prior="Estado_del_Componente" >
+			<column name="clasificacion" type="VARCHAR" length="20" jt="12" mandatory="y" >
+				<comment><![CDATA[Bueno
+averiado
+dañado
+en reparacion]]></comment>
+			</column>
+			<index name="pk_estado_del_componente" unique="PRIMARY_KEY" >
+				<column name="clasificacion" />
+			</index>
+		</table>
+		<table name="Estado_Ram" prior="entity_0" >
+			<column name="clasificacion" type="VARCHAR" length="20" jt="12" mandatory="y" />
+			<index name="pk_estado_ram" unique="PRIMARY_KEY" >
+				<column name="clasificacion" />
+			</index>
+		</table>
+		<table name="Estado_del" prior="entity_0" >
+			<column name="clasificacion" type="VARCHAR" length="20" jt="12" mandatory="y" />
+			<index name="pk_estado_del" unique="PRIMARY_KEY" >
+				<column name="clasificacion" />
 			</index>
 		</table>
 		<table name="Estatus" prior="entity" >
@@ -91,31 +178,39 @@ Malo]]></comment>
 		<table name="Fuentes_de_Alimentacion" prior="Fuentes_de_A" >
 			<column name="Id_Fuentes_Alimentacion" type="INT" jt="4" mandatory="y" />
 			<column name="clasificacion" type="VARCHAR" length="20" jt="12" />
+			<column name="id_estado" type="VARCHAR" length="20" jt="12" />
 			<index name="pk_fuentes_de_alimentacion" unique="PRIMARY_KEY" >
 				<column name="Id_Fuentes_Alimentacion" />
 			</index>
+			<fk name="fk_fuentes_de_alimentacion_estado_fuente" virtual="y" to_schema="equipos.INSTANCE" to_table="estado_fuente" type="Identifying" >
+				<fk_column name="id_estado" pk="clasificacion" />
+			</fk>
 		</table>
 		<table name="Hadware" prior="entity_0" >
 			<column name="Id_hadware" type="INT" jt="4" mandatory="y" />
 			<column name="id_procesador" prior="procesador" type="INT" length="25" jt="4" />
-			<column name="id_tipo_tarjeta de red" prior="tarjeta de red" type="INT" length="20" jt="4" />
 			<column name="id_ram" prior="RAM" type="INT" length="20" jt="4" />
-			<column name="unida_cd/DVD" prior="Unida de cd/DVD" type="BOOLEAN" jt="-7" />
 			<column name="id_puertos" type="INT" jt="4" />
 			<column name="id_dispositivo_almacenamiento" type="INT" jt="4" />
 			<column name="id_fuente_de_alimentacion" type="INT" jt="4" />
-			<column name="bateria" type="VARCHAR" length="50" jt="12" />
+			<column name="id_bateria" type="INT" jt="4" />
 			<index name="pk_hadware" unique="PRIMARY_KEY" >
 				<column name="Id_hadware" />
 			</index>
-			<fk name="fk_hadware_puertos" virtual="y" to_schema="equipos.INSTANCE" to_table="Puertos" type="Identifying" >
+			<fk name="fk_hadware_puertos" virtual="y" to_schema="equipos.INSTANCE" to_table="Cantidad_de_Puertos" type="Identifying" >
 				<fk_column name="id_puertos" pk="Id_Puertos" />
 			</fk>
 			<fk name="fk_hadware_ram" virtual="y" to_schema="equipos.INSTANCE" to_table="RAM" type="Identifying" >
 				<fk_column name="id_ram" pk="Id_Ram" />
 			</fk>
-			<fk name="fk_hadware_procesadores" virtual="y" to_schema="equipos.INSTANCE" to_table="Procesadores" type="Identifying" >
-				<fk_column name="id_procesador" pk="Id_Procesadores" />
+			<fk name="fk_hadware_fuentes_de_alimentacion" virtual="y" to_schema="equipos.INSTANCE" to_table="Fuentes_de_Alimentacion" type="Identifying" >
+				<fk_column name="id_fuente_de_alimentacion" pk="Id_Fuentes_Alimentacion" />
+			</fk>
+			<fk name="fk_hadware_baterias" virtual="y" to_schema="equipos.INSTANCE" to_table="Baterias" type="Identifying" >
+				<fk_column name="id_bateria" pk="Id_Baterias" />
+			</fk>
+			<fk name="fk_hadware_dispositivos_almacenamiento" virtual="y" to_schema="equipos.INSTANCE" to_table="Dispositivos_Almacenamiento" type="Identifying" >
+				<fk_column name="id_dispositivo_almacenamiento" pk="Id_Dispositivo_Almacenamiento" />
 			</fk>
 		</table>
 		<table name="ID" prior="entity" >
@@ -125,6 +220,27 @@ Malo]]></comment>
 			<index name="pk_id" unique="PRIMARY_KEY" >
 				<column name="Id_Propiedad" />
 			</index>
+		</table>
+		<table name="Impresoras" prior="entity_0" >
+			<column name="Id_Impresora" prior="Id_Tipo_Impresora" type="INT" jt="4" mandatory="y" />
+			<column name="id_tipo_impresora" type="VARCHAR" length="20" jt="12" />
+			<column name="id_modelo_impresora" type="VARCHAR" length="25" jt="12" />
+			<column name="id_servicio_impresora" type="INT" jt="4" >
+				<comment><![CDATA[cambio de cartuchos]]></comment>
+			</column>
+			<column name="id_status_impresora" type="VARCHAR" length="15" jt="12" />
+			<index name="pk_impresoras" unique="PRIMARY_KEY" >
+				<column name="Id_Impresora" />
+			</index>
+			<fk name="fk_impresoras_tipo_de_impresora" virtual="y" to_schema="equipos.INSTANCE" to_table="Tipo_de_Impresora" type="Identifying" >
+				<fk_column name="id_tipo_impresora" pk="clasificacion" />
+			</fk>
+			<fk name="fk_impresoras_modelos_impresoras" virtual="y" to_schema="equipos.INSTANCE" to_table="Modelos_Impresoras" type="Identifying" >
+				<fk_column name="id_modelo_impresora" pk="nombre" />
+			</fk>
+			<fk name="fk_impresoras_status_impresora" virtual="y" to_schema="equipos.INSTANCE" to_table="Status_impresora" type="Identifying" >
+				<fk_column name="id_status_impresora" pk="Estado_impresora" />
+			</fk>
 		</table>
 		<table name="Inventario_Equipos" prior="Equipos" >
 			<comment><![CDATA[Características 
@@ -155,11 +271,37 @@ Resguardantes
 				<fk_column name="Id_Inventario" pk="Id_Descripcion" />
 			</fk>
 		</table>
+		<table name="MAC Address" prior="MAC Addre" >
+			<column name="Id_mac_address" type="INT" length="100" jt="4" mandatory="y" />
+			<column name="address" type="VARCHAR" length="100" jt="12" />
+			<index name="pk_mac address" unique="PRIMARY_KEY" >
+				<column name="Id_mac_address" />
+			</index>
+		</table>
+		<table name="MAC_Address" prior="MAC" >
+			<column name="Id_Address" type="VARCHAR" length="100" jt="12" mandatory="y" />
+			<index name="pk_mac_address" unique="PRIMARY_KEY" >
+				<column name="Id_Address" />
+			</index>
+		</table>
+		<table name="Marca_monitor" prior="entity_0" >
+			<column name="Marca_monitor" type="VARCHAR" length="25" jt="12" mandatory="y" />
+			<index name="pk_marca_monitor" unique="PRIMARY_KEY" >
+				<column name="Marca_monitor" />
+			</index>
+		</table>
 		<table name="Marcas" prior="Marca" >
 			<column name="Id_Marca" type="INT" jt="4" mandatory="y" />
 			<column name="nombre" type="VARCHAR" length="20" jt="12" />
 			<index name="pk_marcas" unique="PRIMARY_KEY" >
 				<column name="Id_Marca" />
+			</index>
+		</table>
+		<table name="Modelo_tarjeta_red" prior="Modelo_" >
+			<column name="Id_Modelo_Tarjeta_Red" type="INT" jt="4" mandatory="y" />
+			<column name="nombre" type="VARCHAR" length="25" jt="12" />
+			<index name="pk_modelo_tarjeta_red" unique="PRIMARY_KEY" >
+				<column name="Id_Modelo_Tarjeta_Red" />
 			</index>
 		</table>
 		<table name="Modelos" prior="entity_0" >
@@ -169,39 +311,78 @@ Resguardantes
 				<column name="Id_Modelo" />
 			</index>
 		</table>
+		<table name="Modelos_Impresoras" prior="entity_0" >
+			<column name="nombre" type="VARCHAR" length="25" jt="12" mandatory="y" />
+			<index name="pk_modelos_impresoras" unique="PRIMARY_KEY" >
+				<column name="nombre" />
+			</index>
+		</table>
+		<table name="Modelos_monitor" prior="Modelos_" >
+			<column name="Modelo_monitor" type="VARCHAR" length="25" jt="12" mandatory="y" />
+			<index name="pk_modelos_monitor" unique="PRIMARY_KEY" >
+				<column name="Modelo_monitor" />
+			</index>
+		</table>
 		<table name="Monitores" prior="monitores" >
 			<column name="Id_monitores" type="INT" jt="4" mandatory="y" />
-			<column name="marca" type="VARCHAR" length="25" jt="12" />
-			<column name="modelo" type="VARCHAR" length="25" jt="12" />
+			<column name="id_marca_monitor" prior="marca" type="VARCHAR" length="25" jt="12" />
+			<column name="id_modelo_monitor" prior="modelo" type="VARCHAR" length="25" jt="12" />
 			<index name="pk_monitores" unique="PRIMARY_KEY" >
 				<column name="Id_monitores" />
 			</index>
+			<fk name="fk_monitores_equipos_de_computo" virtual="y" to_schema="equipos.INSTANCE" to_table="Equipos_de_computo" type="Identifying" >
+				<fk_column name="Id_monitores" pk="id_monitores" />
+			</fk>
+			<fk name="fk_monitores_marca_monitor" virtual="y" to_schema="equipos.INSTANCE" to_table="Marca_monitor" type="Identifying" >
+				<fk_column name="id_marca_monitor" pk="Marca_monitor" />
+			</fk>
+			<fk name="fk_monitores_modelos_monitor" virtual="y" to_schema="equipos.INSTANCE" to_table="Modelos_monitor" type="Identifying" >
+				<fk_column name="id_modelo_monitor" pk="Modelo_monitor" />
+			</fk>
 		</table>
 		<table name="Permisos_Eq" prior="entity" />
 		<table name="Procesadores" prior="procesadores" >
 			<column name="Id_Procesadores" type="INT" jt="4" mandatory="y" />
 			<column name="clasificacion" type="VARCHAR" length="20" jt="12" />
+			<column name="id_estado" type="VARCHAR" length="20" jt="12" />
 			<index name="pk_procesadores" unique="PRIMARY_KEY" >
 				<column name="Id_Procesadores" />
 			</index>
-		</table>
-		<table name="Puertos" prior="entity_0" >
-			<column name="Id_Puertos" type="INT" jt="4" mandatory="y" />
-			<column name="usb" type="INT" length="1" jt="4" />
-			<column name="usb_c" type="INT" jt="4" />
-			<column name="audio" prior="audi" type="VARCHAR" length="15" jt="12" />
-			<column name="vga" type="BOOLEAN" jt="-7" />
-			<column name="hdmi" type="BOOLEAN" jt="-7" />
-			<index name="pk_puertos" unique="PRIMARY_KEY" >
-				<column name="Id_Puertos" />
-			</index>
+			<fk name="fk_procesadores_estado_procesador" virtual="y" to_schema="equipos.INSTANCE" to_table="Estado_Procesador" type="Identifying" >
+				<fk_column name="id_estado" pk="clasificacion" />
+			</fk>
 		</table>
 		<table name="RAM" prior="entity_0" >
 			<column name="Id_Ram" type="INT" jt="4" mandatory="y" />
 			<column name="clasificacion" type="VARCHAR" length="20" jt="12" />
+			<column name="id_estado" type="VARCHAR" length="20" jt="12" />
 			<index name="pk_ram" unique="PRIMARY_KEY" >
 				<column name="Id_Ram" />
 			</index>
+			<fk name="fk_ram_estado_ram" virtual="y" to_schema="equipos.INSTANCE" to_table="Estado_Ram" type="Identifying" >
+				<fk_column name="id_estado" pk="clasificacion" />
+			</fk>
+		</table>
+		<table name="Scanners" prior="entity_0" >
+			<column name="Id_Scanner" type="INT" jt="4" mandatory="y" />
+			<column name="id_modelo_escaner" type="VARCHAR" length="20" jt="12" />
+			<column name="id_servicio_escaner" type="INT" jt="4" />
+			<column name="id_status_impresora" type="VARCHAR" length="15" jt="12" />
+			<index name="pk_scanners" unique="PRIMARY_KEY" >
+				<column name="Id_Scanner" />
+			</index>
+		</table>
+		<table name="Servicio_Equipos" prior="entity_0" >
+			<column name="Id_servicios" type="INT" jt="4" mandatory="y" />
+			<column name="id_tipo_de_servicios" type="VARCHAR" length="20" jt="12" />
+			<column name="fecha_inicio" type="DATE" jt="91" />
+			<column name="fecha_fin" type="DATE" jt="91" />
+			<index name="pk_entity_0" unique="PRIMARY_KEY" >
+				<column name="Id_servicios" />
+			</index>
+			<fk name="fk_servicio_equipos_equipos_de_computo" virtual="y" to_schema="equipos.INSTANCE" to_table="Equipos_de_computo" type="Identifying" >
+				<fk_column name="Id_servicios" pk="id_servicios_equipo" />
+			</fk>
 		</table>
 		<table name="Servicios" prior="entity" >
 			<comment><![CDATA[Preventivo
@@ -220,15 +401,56 @@ Correctivo]]></comment>
 				<fk_column name="Id_Servicio" pk="Servicio" />
 			</fk>
 		</table>
+		<table name="Servicios_Impresora" prior="Servicios_Equipos" >
+			<column name="Id_servicios_impresora" type="INT" jt="4" mandatory="y" />
+			<column name="id_tipo_de_servicio_impresora" prior="id_tipo_de_servicio" type="VARCHAR" length="25" jt="12" />
+			<column name="fecha_inicio" type="DATE" jt="91" />
+			<column name="fecha_fin" type="DATE" jt="91" />
+			<column name="accion" type="VARCHAR" length="125" jt="12" />
+			<index name="pk_servicios_equipos" unique="PRIMARY_KEY" >
+				<column name="Id_servicios_impresora" />
+			</index>
+			<fk name="fk_servicios_equipos_impresoras" virtual="y" to_schema="equipos.INSTANCE" to_table="Impresoras" type="Identifying" >
+				<fk_column name="Id_servicios_impresora" pk="id_servicio_impresora" />
+			</fk>
+			<fk name="fk_servicios_impresora_tipo_servicio_impresora" virtual="y" to_schema="equipos.INSTANCE" to_table="Tipo_Servicio_Impresora" type="Identifying" >
+				<fk_column name="id_tipo_de_servicio_impresora" pk="clasificacion" />
+			</fk>
+		</table>
+		<table name="Servicios_escaner" prior="entity_0" >
+			<column name="Id_servicio_escaner" type="INT" jt="4" mandatory="y" />
+			<column name="id_tipo_de_servicio" type="VARCHAR" length="25" jt="12" />
+			<column name="fecha_inicio" type="DATE" jt="91" />
+			<column name="fecha_fin" type="DATE" jt="91" />
+			<column name="accion" type="TEXT" length="125" jt="-1" />
+			<index name="pk_servicios_escaner" unique="PRIMARY_KEY" >
+				<column name="Id_servicio_escaner" />
+			</index>
+			<fk name="fk_servicios_escaner_scanners" virtual="y" to_schema="equipos.INSTANCE" to_table="Scanners" type="Identifying" >
+				<fk_column name="Id_servicio_escaner" pk="id_servicio_escaner" />
+			</fk>
+			<fk name="fk_servicios_escaner_tipo_servicio_impresora_escaner" virtual="y" to_schema="equipos.INSTANCE" to_table="tipo_servicio_impresora_escaner" type="Identifying" >
+				<fk_column name="id_tipo_de_servicio" pk="clasificacion" />
+			</fk>
+		</table>
+		<table name="Servidores" prior="entity_0" >
+			<column name="Id_Servidores" type="INT" jt="4" mandatory="y" />
+			<column name="id_hardware" type="INT" jt="4" />
+			<column name="id_software" type="INT" jt="4" />
+			<column name="id_tipo_servidor" type="INT" jt="4" />
+			<column name="id_status_servidor" type="INT" length="1" jt="4" />
+			<column name="id_servicios_servidor" type="INT" jt="4" />
+			<index name="pk_servidores" unique="PRIMARY_KEY" >
+				<column name="Id_Servidores" />
+			</index>
+		</table>
 		<table name="Sistema_Operativo" prior="entity_0" >
 			<column name="Id_Sistema_Operativo" type="INT" jt="4" mandatory="y" />
 			<column name="Nombre" type="VARCHAR" length="50" jt="12" />
+			<column name="vesion" type="CHAR" length="8" jt="1" />
 			<index name="pk_sistema_operativo" unique="PRIMARY_KEY" >
 				<column name="Id_Sistema_Operativo" />
 			</index>
-			<fk name="fk_sistema_operativo_software" virtual="y" to_schema="equipos.INSTANCE" to_table="Software" type="Identifying" >
-				<fk_column name="Id_Sistema_Operativo" pk="id_sistema_operativo" />
-			</fk>
 		</table>
 		<table name="Software" prior="Sof" >
 			<column name="Id_software" type="INT" jt="4" mandatory="y" />
@@ -237,24 +459,67 @@ Correctivo]]></comment>
 			<index name="pk_software" unique="PRIMARY_KEY" >
 				<column name="Id_software" />
 			</index>
+			<fk name="fk_software_sistema_operativo" virtual="y" to_schema="equipos.INSTANCE" to_table="Sistema_Operativo" type="Identifying" >
+				<fk_column name="id_sistema_operativo" pk="Id_Sistema_Operativo" />
+			</fk>
+		</table>
+		<table name="Status_Equipo" prior="Status_" >
+			<column name="Estado_equipo" type="VARCHAR" length="15" jt="12" mandatory="y" />
+			<index name="pk_status_equipo" unique="PRIMARY_KEY" >
+				<column name="Estado_equipo" />
+			</index>
+		</table>
+		<table name="Status_impresora" prior="Status_" >
+			<column name="Estado_impresora" type="VARCHAR" length="15" jt="12" mandatory="y" />
+			<index name="pk_status_impresora" unique="PRIMARY_KEY" >
+				<column name="Estado_impresora" />
+			</index>
 		</table>
 		<table name="Tarjetas_de_Red" prior="Tarjetas_de" >
 			<column name="Id_Tarjeta_de_Red" type="INT" jt="4" mandatory="y" />
-			<column name="clasificacion" type="VARCHAR" length="20" jt="12" >
+			<column name="id_modelo_tarjeta_red" prior="modelo" type="VARCHAR" length="25" jt="12" />
+			<column name="id_clasificacion_tarjeta_red" prior="clasificacion" type="VARCHAR" length="20" jt="12" >
 				<comment><![CDATA[wifi
 ethernet
 arcnet
 token ring]]></comment>
 			</column>
+			<column name="id_mac_address" type="VARCHAR" length="100" jt="12" />
 			<index name="pk_tarjetas_de_red" unique="PRIMARY_KEY" >
 				<column name="Id_Tarjeta_de_Red" />
 			</index>
-			<fk name="fk_tarjetas_de_red_hadware" virtual="y" to_schema="equipos.INSTANCE" to_table="Hadware" type="ManyToMany" >
-				<fk_column name="Id_Tarjeta_de_Red" pk="id_tipo_tarjeta de red" />
+			<fk name="fk_tarjetas_de_red_equipos_de_computo" virtual="y" to_schema="equipos.INSTANCE" to_table="Equipos_de_computo" type="Identifying" >
+				<fk_column name="Id_Tarjeta_de_Red" pk="id_tarjetas_de_red" />
+			</fk>
+			<fk name="fk_tarjetas_de_red_modelo_tarjeta_red" virtual="y" to_schema="equipos.INSTANCE" to_table="Modelo_tarjeta_red" type="Identifying" >
+				<fk_column name="id_modelo_tarjeta_red" pk="Id_Modelo_Tarjeta_Red" />
+			</fk>
+			<fk name="fk_tarjetas_de_red_clasificacion_tarjetas_red" virtual="y" to_schema="equipos.INSTANCE" to_table="Clasificacion_tarjetas_red" type="Identifying" >
+				<fk_column name="id_clasificacion_tarjeta_red" pk="Clasificacion_tarjetas_red" />
+			</fk>
+			<fk name="fk_tarjetas_de_red_mac_address" virtual="y" to_schema="equipos.INSTANCE" to_table="MAC_Address" type="OneToOne" >
+				<fk_column name="id_mac_address" pk="Id_Address" />
 			</fk>
 		</table>
+		<table name="Tipo" prior="entity_0" />
+		<table name="Tipo_Servicio_Impresora" prior="Tipo_Servicio_Impresor" >
+			<comment><![CDATA[preventiv
+o
+correctivo]]></comment>
+			<column name="clasificacion" prior="nombre" type="VARCHAR" length="25" jt="12" mandatory="y" >
+				<comment><![CDATA[preventivo
+correctivo]]></comment>
+			</column>
+			<index name="pk_tipo_servicio_impresora" unique="PRIMARY_KEY" >
+				<column name="clasificacion" />
+			</index>
+		</table>
 		<table name="Tipo_de_Equipo_Computo" prior="Tipo_de_Equipo_Com" >
-			<column name="Id_Tipo_Equipo_Computo" type="INT" jt="4" mandatory="y" />
+			<column name="Id_Tipo_Equipo_Computo" type="INT" jt="4" mandatory="y" >
+				<comment><![CDATA[como colocar el estado 
+para cada componente 
+en cada registro hardware]]></comment>
+			</column>
 			<column name="clasificación" type="VARCHAR" length="10" jt="12" >
 				<comment><![CDATA[Escritorio
 portatil]]></comment>
@@ -263,32 +528,98 @@ portatil]]></comment>
 				<column name="Id_Tipo_Equipo_Computo" />
 			</index>
 		</table>
+		<table name="Tipo_de_Impresora" prior="entity_0" >
+			<column name="clasificacion" type="VARCHAR" length="20" jt="12" mandatory="y" />
+			<index name="pk_tipo_de_impresora" unique="PRIMARY_KEY" >
+				<column name="clasificacion" />
+			</index>
+		</table>
 		<table name="entity" />
+		<table name="estado_almacenamiento" prior="estado_puertos_0" >
+			<column name="clasificacion" type="VARCHAR" length="20" jt="12" mandatory="y" />
+			<index name="pk_estado_ram_1" unique="PRIMARY_KEY" >
+				<column name="clasificacion" />
+			</index>
+		</table>
+		<table name="estado_bateria" prior="estado_fuente_0" >
+			<column name="clasificacion" type="VARCHAR" length="20" jt="12" mandatory="y" />
+			<index name="pk_estado_ram_3" unique="PRIMARY_KEY" >
+				<column name="clasificacion" />
+			</index>
+		</table>
+		<table name="estado_fuente" prior="estado_almacenamiento_0" >
+			<column name="clasificacion" type="VARCHAR" length="20" jt="12" mandatory="y" />
+			<index name="pk_estado_ram_2" unique="PRIMARY_KEY" >
+				<column name="clasificacion" />
+			</index>
+		</table>
+		<table name="estado_puertos" prior="estado_ram_0" >
+			<column name="clasificacion" type="VARCHAR" length="20" jt="12" mandatory="y" />
+			<index name="pk_estado_ram_0" unique="PRIMARY_KEY" >
+				<column name="clasificacion" />
+			</index>
+		</table>
+		<table name="tipo_servicio_impresora_escaner" prior="tipo_servicio_impresora_0" >
+			<comment><![CDATA[preventiv
+o
+correctivo]]></comment>
+			<column name="clasificacion" type="VARCHAR" length="25" jt="12" mandatory="y" >
+				<comment><![CDATA[preventivo
+correctivo]]></comment>
+			</column>
+			<index name="pk_tipo_servicio_impresora_0" unique="PRIMARY_KEY" >
+				<column name="clasificacion" />
+			</index>
+		</table>
 	</schema>
 	<layout name="Default Layout" id="Layout-d9" joined_routing="y" show_relation="columns" >
-		<entity schema="equipos.INSTANCE" name="Areas" color="C1D8EE" x="928" y="368" />
-		<entity schema="equipos.INSTANCE" name="Catalogo" color="C1D8EE" x="496" y="160" />
-		<entity schema="equipos.INSTANCE" name="Dispositivos_Almacenamiento" color="C1D8EE" x="816" y="880" />
-		<entity schema="equipos.INSTANCE" name="Edificio-Area" color="C1D8EE" x="704" y="272" />
-		<entity schema="equipos.INSTANCE" name="Efidicios" color="C1D8EE" x="896" y="256" />
-		<entity schema="equipos.INSTANCE" name="Equipos_de_computo" color="C1D8EE" x="240" y="608" />
-		<entity schema="equipos.INSTANCE" name="Estatus" color="C1D8EE" x="560" y="256" />
-		<entity schema="equipos.INSTANCE" name="Fuentes_de_Alimentacion" color="C1D8EE" x="816" y="960" />
-		<entity schema="equipos.INSTANCE" name="Hadware" color="C1D8EE" x="464" y="768" />
-		<entity schema="equipos.INSTANCE" name="ID" color="C1D8EE" x="48" y="128" />
-		<entity schema="equipos.INSTANCE" name="Inventario_Equipos" color="C1D8EE" x="256" y="160" />
-		<entity schema="equipos.INSTANCE" name="Marcas" color="C1D8EE" x="480" y="464" />
-		<entity schema="equipos.INSTANCE" name="Modelos" color="C1D8EE" x="480" y="560" />
-		<entity schema="equipos.INSTANCE" name="Monitores" color="C1D8EE" x="112" y="448" />
-		<entity schema="equipos.INSTANCE" name="Procesadores" color="C1D8EE" x="848" y="496" />
-		<entity schema="equipos.INSTANCE" name="Puertos" color="C1D8EE" x="864" y="736" />
-		<entity schema="equipos.INSTANCE" name="RAM" color="C1D8EE" x="864" y="656" />
-		<entity schema="equipos.INSTANCE" name="Servicios" color="C1D8EE" x="704" y="160" />
-		<entity schema="equipos.INSTANCE" name="Sistema_Operativo" color="C1D8EE" x="704" y="1088" />
-		<entity schema="equipos.INSTANCE" name="Software" color="C1D8EE" x="480" y="1072" />
-		<entity schema="equipos.INSTANCE" name="Tarjetas_de_Red" color="C1D8EE" x="848" y="576" />
-		<entity schema="equipos.INSTANCE" name="Tipo_de_Equipo_Computo" color="C1D8EE" x="464" y="368" />
-		<callout x="384" y="48" pointer="Round" >
+		<entity schema="equipos.INSTANCE" name="Areas" color="C1D8EE" x="1424" y="304" />
+		<entity schema="equipos.INSTANCE" name="Baterias" color="C1D8EE" x="1280" y="1136" />
+		<entity schema="equipos.INSTANCE" name="Cantidad_de_Puertos" color="C1D8EE" x="1296" y="720" />
+		<entity schema="equipos.INSTANCE" name="Catalogo" color="C1D8EE" x="944" y="160" />
+		<entity schema="equipos.INSTANCE" name="Clasificacion_tarjetas_red" color="C1D8EE" x="48" y="720" />
+		<entity schema="equipos.INSTANCE" name="Dispositivos_Almacenamiento" color="C1D8EE" x="1264" y="912" />
+		<entity schema="equipos.INSTANCE" name="Edificio-Area" color="C1D8EE" x="1152" y="272" />
+		<entity schema="equipos.INSTANCE" name="Efidicios" color="C1D8EE" x="1376" y="176" />
+		<entity schema="equipos.INSTANCE" name="Equipos_de_computo" color="C1D8EE" x="656" y="592" />
+		<entity schema="equipos.INSTANCE" name="Estado_Procesador" color="C1D8EE" x="1504" y="512" />
+		<entity schema="equipos.INSTANCE" name="Estado_Ram" color="C1D8EE" x="1504" y="640" />
+		<entity schema="equipos.INSTANCE" name="Estatus" color="C1D8EE" x="1008" y="256" />
+		<entity schema="equipos.INSTANCE" name="Fuentes_de_Alimentacion" color="C1D8EE" x="1280" y="1024" />
+		<entity schema="equipos.INSTANCE" name="Hadware" color="C1D8EE" x="912" y="768" />
+		<entity schema="equipos.INSTANCE" name="ID" color="C1D8EE" x="496" y="128" />
+		<entity schema="equipos.INSTANCE" name="Impresoras" color="C1D8EE" x="400" y="1104" />
+		<entity schema="equipos.INSTANCE" name="Inventario_Equipos" color="C1D8EE" x="704" y="160" />
+		<entity schema="equipos.INSTANCE" name="MAC_Address" color="C1D8EE" x="96" y="864" />
+		<entity schema="equipos.INSTANCE" name="Marca_monitor" color="C1D8EE" x="320" y="400" />
+		<entity schema="equipos.INSTANCE" name="Marcas" color="C1D8EE" x="928" y="464" />
+		<entity schema="equipos.INSTANCE" name="Modelo_tarjeta_red" color="C1D8EE" x="80" y="576" />
+		<entity schema="equipos.INSTANCE" name="Modelos" color="C1D8EE" x="928" y="560" />
+		<entity schema="equipos.INSTANCE" name="Modelos_Impresoras" color="C1D8EE" x="160" y="1168" />
+		<entity schema="equipos.INSTANCE" name="Modelos_monitor" color="C1D8EE" x="304" y="480" />
+		<entity schema="equipos.INSTANCE" name="Monitores" color="C1D8EE" x="480" y="432" />
+		<entity schema="equipos.INSTANCE" name="Procesadores" color="C1D8EE" x="1296" y="480" />
+		<entity schema="equipos.INSTANCE" name="RAM" color="C1D8EE" x="1312" y="608" />
+		<entity schema="equipos.INSTANCE" name="Scanners" color="C1D8EE" x="336" y="1568" />
+		<entity schema="equipos.INSTANCE" name="Servicio_Equipos" color="C1D8EE" x="672" y="976" />
+		<entity schema="equipos.INSTANCE" name="Servicios" color="C1D8EE" x="1152" y="160" />
+		<entity schema="equipos.INSTANCE" name="Servicios_Impresora" color="C1D8EE" x="400" y="1296" />
+		<entity schema="equipos.INSTANCE" name="Servicios_escaner" color="C1D8EE" x="368" y="1728" />
+		<entity schema="equipos.INSTANCE" name="Servidores" color="C1D8EE" x="352" y="2000" />
+		<entity schema="equipos.INSTANCE" name="Sistema_Operativo" color="C1D8EE" x="1136" y="1280" />
+		<entity schema="equipos.INSTANCE" name="Software" color="C1D8EE" x="912" y="1264" />
+		<entity schema="equipos.INSTANCE" name="Status_Equipo" color="C1D8EE" x="416" y="656" />
+		<entity schema="equipos.INSTANCE" name="Status_impresora" color="C1D8EE" x="112" y="1264" />
+		<entity schema="equipos.INSTANCE" name="Tarjetas_de_Red" color="C1D8EE" x="416" y="816" />
+		<entity schema="equipos.INSTANCE" name="Tipo_Servicio_Impresora" color="C1D8EE" x="96" y="1424" />
+		<entity schema="equipos.INSTANCE" name="Tipo_de_Equipo_Computo" color="C1D8EE" x="912" y="368" />
+		<entity schema="equipos.INSTANCE" name="Tipo_de_Impresora" color="C1D8EE" x="160" y="1104" />
+		<entity schema="equipos.INSTANCE" name="estado_almacenamiento" color="3986C1" x="1568" y="944" />
+		<entity schema="equipos.INSTANCE" name="estado_bateria" color="3986C1" x="1488" y="1184" />
+		<entity schema="equipos.INSTANCE" name="estado_fuente" color="3986C1" x="1552" y="1056" />
+		<entity schema="equipos.INSTANCE" name="estado_puertos" color="3986C1" x="1552" y="832" />
+		<entity schema="equipos.INSTANCE" name="tipo_servicio_impresora_escaner" color="3986C1" x="592" y="1744" />
+		<callout x="832" y="48" pointer="Round" >
 			<comment><![CDATA[Add entities to the layout by drag & drop from the project structure.
 Double-click the entity header to edit.
 Drop this callout from its context menu.]]></comment>
